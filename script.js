@@ -1,129 +1,112 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const generateBtn = document.getElementById('generate-btn');
-    const resetBtn = document.getElementById('reset-btn');
-    const form = document.getElementById('prompt-form');
+    const generateButton = document.getElementById('generate_prompt');
+    const resetButton = document.getElementById('reset_button');
+    const promptIndonesia = document.getElementById('prompt_indonesia');
+    const promptInggris = document.getElementById('prompt_inggris');
 
-    // --- Element Selectors ---
-    const elements = {
-        judulScene: document.getElementById('judul-scene'),
-        deskripsiKarakter: document.getElementById('deskripsi-karakter'),
-        suaraKarakter: document.getElementById('suara-karakter'),
-        aksiKarakter: document.getElementById('aksi-karakter'),
-        ekspresiKarakter: document.getElementById('ekspresi-karakter'),
-        latar: document.getElementById('latar'),
-        gerakanKamera: document.getElementById('gerakan-kamera'),
-        visualTambahanText: document.getElementById('visual-tambahan-text'),
-        suasana: document.getElementById('suasana'),
-        suaraLingkungan: document.getElementById('suara-lingkungan'),
-        dialog: document.getElementById('dialog'),
-        negativePrompt: document.getElementById('negative-prompt'),
-        outputId: document.getElementById('output-id'),
-        outputEn: document.getElementById('output-en')
-    };
+    const inputIds = [
+        'deskripsi_karakter',
+        'detail_pakaian',
+        'pose_karakter',
+        'ekspresi_karakter',
+        'latar_belakang',
+        'pencahayaan',
+        'kamera_foto',
+        'posisi_kamera',
+        'detail_visual'
+    ];
 
-    // --- Event Listeners ---
-    generateBtn.addEventListener('click', generatePrompts);
-    resetBtn.addEventListener('click', resetForm);
-
-    // --- Main Functions ---
-
-    function generatePrompts() {
-        const inputs = getFormValues();
+    generateButton.addEventListener('click', async () => {
+        let fullPrompt = "Buatlah gambar dari seorang karakter dengan detail sebagai berikut: ";
         
-        // Generate Indonesian Prompt
-        const promptId = createIndonesianPrompt(inputs);
-        elements.outputId.value = promptId;
-
-        // Generate English Prompt
-        const promptEn = createEnglishPrompt(inputs);
-        elements.outputEn.value = promptEn;
-    }
-
-    function resetForm() {
-        form.reset();
-        elements.outputId.value = '';
-        elements.outputEn.value = '';
-    }
-
-    // --- Helper Functions ---
-
-    function getFormValues() {
-        return {
-            judul: elements.judulScene.value.trim(),
-            karakter: elements.deskripsiKarakter.value.trim(),
-            suara: elements.suaraKarakter.value.trim(),
-            aksi: elements.aksiKarakter.value.trim(),
-            ekspresi: elements.ekspresiKarakter.value.trim(),
-            latar: elements.latar.value.trim(),
-            kamera: elements.gerakanKamera.value,
-            visual: elements.visualTambahanText.value.trim(),
-            suasana: elements.suasana.value.trim(),
-            ambience: elements.suaraLingkungan.value.trim(),
-            dialog: elements.dialog.value.trim(),
-            negative: elements.negativePrompt.value.trim()
-        };
-    }
-
-    function createIndonesianPrompt(data) {
-        let prompt = `Judul Scene: ${data.judul}\n\n`;
-        prompt += `Deskripsi Prompt Lengkap:\n`;
-        
-        let characterDesc = `Seorang karakter utama, yaitu ${data.karakter}. `;
-        characterDesc += `Karakter ini ${data.aksi} dengan ekspresi ${data.ekspresi}. `;
-        
-        let settingDesc = `Berlatar di ${data.latar}. `;
-        settingDesc += `Suasana keseluruhan adalah ${data.suasana}. `;
-        
-        let visualDesc = `Gaya visualnya adalah cinematic realistis, kualitas 4K. `;
-        if (data.kamera) {
-            visualDesc += `Gerakan kamera utama adalah ${data.kamera}. `;
-        }
-        if (data.visual) {
-             visualDesc += `Detail visual tambahan mencakup: ${data.visual}. `;
+        const deskripsi_karakter = document.getElementById('deskripsi_karakter').value.trim();
+        if (deskripsi_karakter) {
+            fullPrompt += `Karakter utama adalah ${deskripsi_karakter}. `;
         }
 
-        let audioDesc = `Terdengar ${data.ambience}. Detail suara karakter adalah: ${data.suara}.`;
-
-        prompt += `${characterDesc}${settingDesc}${visualDesc}${audioDesc}\n\n`;
-
-        if (data.dialog) {
-             prompt += `Dialog:\n${data.dialog}\n\n`;
+        const detail_pakaian = document.getElementById('detail_pakaian').value.trim();
+        if (detail_pakaian) {
+            fullPrompt += `Pakaian yang dikenakan adalah ${detail_pakaian}. `;
         }
 
-        prompt += `Negative Prompt:\n${data.negative}`;
-
-        return prompt;
-    }
-
-    function createEnglishPrompt(data) {
-        let prompt = `Scene Title: ${data.judul}\n\n`;
-        prompt += `Full Prompt Description:\n`;
-        
-        let characterDesc = `A main character, who is ${data.karakter}. `;
-        characterDesc += `This character ${data.aksi} with an expression of ${data.ekspresi}. `;
-        
-        let settingDesc = `The setting is ${data.latar}. `;
-        settingDesc += `The overall atmosphere is ${data.suasana}. `;
-        
-        let visualDesc = `The visual style is cinematic realism, 4K quality. `;
-        if (data.kamera) {
-            visualDesc += `The main camera movement is a ${data.kamera}. `;
-        }
-        if (data.visual) {
-             visualDesc += `Additional visual details include: ${data.visual}. `;
+        const pose_karakter = document.getElementById('pose_karakter').value.trim();
+        if (pose_karakter) {
+            fullPrompt += `Pose karakter ${pose_karakter}. `;
         }
 
-        let audioDesc = `The ambient sound consists of ${data.ambience}. The character's voice details are: ${data.suara}.`;
-        
-        prompt += `${characterDesc}${settingDesc}${visualDesc}${audioDesc}\n\n`;
-
-        if (data.dialog) {
-             // As requested, the dialog is not translated.
-             prompt += `Dialogue (in Indonesian):\n${data.dialog}\n\n`;
+        const ekspresi_karakter = document.getElementById('ekspresi_karakter').value.trim();
+        if (ekspresi_karakter) {
+            fullPrompt += `Ekspresi wajahnya ${ekspresi_karakter}. `;
         }
 
-        prompt += `Negative Prompt:\n${data.negative}`;
+        const latar_belakang = document.getElementById('latar_belakang').value.trim();
+        if (latar_belakang) {
+            fullPrompt += `Berlatar di ${latar_belakang}. `;
+        }
+
+        const pencahayaan = document.getElementById('pencahayaan').value.trim();
+        if (pencahayaan) {
+            fullPrompt += `Dengan pencahayaan ${pencahayaan}. `;
+        }
+
+        const kamera_foto = document.getElementById('kamera_foto').value.trim();
+        if (kamera_foto) {
+            fullPrompt += `Gaya foto menyerupai hasil ${kamera_foto}. `;
+        }
+
+        const posisi_kamera = document.getElementById('posisi_kamera').value.trim();
+        if (posisi_kamera) {
+            fullPrompt += `Sudut pengambilan gambar dari ${posisi_kamera}. `;
+        }
+
+        const detail_visual = document.getElementById('detail_visual').value.trim();
+        if (detail_visual) {
+            fullPrompt += `Detail visual tambahan: ${detail_visual}. `;
+        }
         
-        return prompt;
+        const negative_prompt = document.getElementById('negative_prompt').value.trim();
+        if (negative_prompt) {
+            fullPrompt += `Negative Prompt: ${negative_prompt}.`;
+        }
+
+        promptIndonesia.value = fullPrompt.trim();
+
+        try {
+            const translatedText = await translate(fullPrompt, { to: 'en', engine: 'google' });
+            promptInggris.value = translatedText;
+        } catch (error) {
+            console.error('Translation error:', error);
+            promptInggris.value = 'Translation failed. Please check your internet connection or API key.';
+        }
+    });
+
+    resetButton.addEventListener('click', () => {
+        inputIds.forEach(id => {
+            document.getElementById(id).value = '';
+        });
+        document.getElementById('negative_prompt').value = '';
+        promptIndonesia.value = '';
+        promptInggris.value = '';
+    });
+
+    // Helper function for translation
+    async function translate(text, options) {
+        // This is a placeholder for a real translation API call.
+        // Using a free, client-side library for this example.
+        // You would replace this with a call to a proper translation service for production.
+        const { to, engine } = options;
+        const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${to}&dt=t&q=${encodeURIComponent(text)}`;
+        
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data && data[0] && data[0][0] && data[0][0][0]) {
+                return data[0].map(item => item[0]).join('');
+            }
+            return 'Translation failed';
+        } catch (error) {
+            console.error('Translation fetch error:', error);
+            return 'Translation failed';
+        }
     }
 }); 
